@@ -52,6 +52,7 @@
     <link rel="stylesheet" href="css/features.css" />
     <link rel="stylesheet" href="css/gallery.css" />
     <link rel="stylesheet" href="css/aos-optimizations.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
 
     <!-- Bootstrap -->
     <link
@@ -142,6 +143,7 @@
   </head>
   <body>
     <!-- Navigation -->
+    <div class="mobile-menu-backdrop"></div>
     <div class="head">
       <div class="navbar">
         <a href="#home" class="title"
@@ -850,7 +852,7 @@
               </p>
               <p>
                 <i class="fa-regular fa-envelope tag"></i
-                >kidzmontessoriacademy@gmail.com
+                >info@kidzmontessoriacademy.com
               </p>
               <p>
                 <i class="fa-regular fa-clock tag"></i>Monday-Friday: 9:00 am -
@@ -858,6 +860,7 @@
               </p>
             </div>
           </div>
+
           <div
             class="form-container"
             data-aos="fade-left"
@@ -866,7 +869,18 @@
           >
             <h2 class="form_header">Contact Us</h2>
             <br />
-            <form id="contact-form" novalidate>
+            <form
+              id="contactForm"
+              action="sendmail.php"
+              method="POST"
+             
+              novalidate
+            >
+              <input
+                type="hidden"
+                id="recaptcha_token"
+                name="recaptcha_token"
+              />
               <div class="form-group mb-3">
                 <label for="name">Name:</label>
                 <input
@@ -898,8 +912,8 @@
                   id="phonenumber"
                   name="phonenumber"
                   class="form-control"
-                  required
                   pattern="[0-9]{10}"
+                  required
                 />
                 <small class="error-message text-danger"></small>
               </div>
@@ -917,8 +931,9 @@
               </div>
 
               <button type="submit" class="button mt-2">Submit</button>
-              <p id="form-status" class="mt-3"></p>
             </form>
+
+            <div id="form-status" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -962,27 +977,7 @@
                 <a href="#contact">Contact Us</a>
               </div>
             </div>
-            <!-- <div class="footer__division">
-              <div class="footer__title">Keep in Touch</div>
-              <div class="footer__links">
-                <p>
-                  <i class="fa-brands fa-square-twitter tag"></i
-                  ><a href="javascript:void(0)">Twitter</a>
-                </p>
-                <p>
-                  <i class="fa-brands fa-square-youtube tag"></i
-                  ><a href="javascript:void(0)">Youtube</a>
-                </p>
-                <p>
-                  <i class="fa-brands fa-square-instagram tag"></i
-                  ><a href="javascript:void(0)">Instagram</a>
-                </p>
-                <p>
-                  <i class="fa-brands fa-square-facebook tag"></i
-                  ><a href="javascript:void(0)">Facebook</a>
-                </p>
-              </div>
-            </div> -->
+
             <div class="footer__division_3">
               <div class="footer__title">Contact Us</div>
               <div>
@@ -1007,7 +1002,7 @@
           <div class="footer__2">
             <div class="tag">kidzmontessoriacademy</div>
             <div class="footer__bottom">
-              <div>Privacy Policy / Copyright © 2025. All rights reserved.</div>
+              <div>Privacy Policy / Copyright © <span id="year"></span>. All rights reserved.</div>
               <div class="footer__developer">
                 Designed and Developed by
                 <a
@@ -1075,6 +1070,9 @@
     </div>
 
     <!-- Scripts -->
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
       integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
@@ -1102,104 +1100,7 @@
     <script src="./css/script.js"></script>
     <script src="./assests/js/features.js"></script>
     <script src="./css/gallery.js"></script>
-    <script>
-      const form = document.getElementById("contact-form");
-      const statusMsg = document.getElementById("form-status");
 
-      const validators = {
-        name: (value) => value.trim() !== "" || "Please enter your name.",
-        email: (value) =>
-          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) ||
-          "Please enter a valid email address.",
-        phonenumber: (value) =>
-          /^[0-9]{10,15}$/.test(value) ||
-          "Please enter a valid phone number with 10 to 15 digits.",
-        message: (value) => value.trim() !== "" || "Please enter a message.",
-      };
-
-      function showError(input, message) {
-        const errorElement = input.nextElementSibling;
-        errorElement.textContent = message || "";
-      }
-
-      // Validate on input (real-time)
-      Object.keys(validators).forEach((field) => {
-        const input = document.getElementById(field);
-        input.addEventListener("input", () => {
-          const result = validators[field](input.value);
-          if (result !== true) {
-            showError(input, result);
-          } else {
-            showError(input, "");
-          }
-        });
-      });
-
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        let isValid = true;
-
-        // Validate each field before submit
-        Object.keys(validators).forEach((field) => {
-          const input = document.getElementById(field);
-          const result = validators[field](input.value);
-          if (result !== true) {
-            showError(input, result);
-            isValid = false;
-          } else {
-            showError(input, "");
-          }
-        });
-
-        if (!isValid) return;
-
-        // Send form data to backend
-        try {
-          statusMsg.textContent = "Sending...";
-          const response = await fetch(
-            "https://kidzmontessori-backend.onrender.com/api/contact",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: form.name.value,
-                email: form.email.value,
-                contact: form.phonenumber.value,
-                message: form.message.value,
-              }),
-            }
-          );
-          const data = await response.json();
-          if (response.ok && data.ok) {
-            statusMsg.style.color = "green";
-            statusMsg.textContent =
-              data.message || "Message sent successfully!";
-            form.reset();
-            document
-              .querySelectorAll(".error-message")
-              .forEach((el) => (el.textContent = ""));
-
-            // Hide the message after 2 seconds
-            setTimeout(() => {
-              statusMsg.textContent = "";
-            }, 2000);
-          } else {
-            statusMsg.style.color = "red";
-            statusMsg.textContent =
-              data.message || "Something went wrong. Please try again.";
-
-            // Optionally hide this message after 2 seconds as well
-            setTimeout(() => {
-              statusMsg.textContent = "";
-            }, 2000);
-          }
-        } catch (error) {
-          statusMsg.style.color = "red";
-          statusMsg.textContent = "Failed to connect to server.";
-          console.error(error);
-        }
-      });
-    </script>
     <script>
       // Testimonial Carousel
       $(".testimonial-carousel").owlCarousel({
@@ -1453,5 +1354,15 @@
         });
       })();
     </script>
+    <!-- AJAX form submission script -->
+    <script src="./assests/js/form-submit.js"></script>
+
+    <script>
+      const RECAPTCHA_SITE_KEY = "6LfuwSAsAAAAAGUvsU-FGxY2m2NDoLPhvZmAKuDC";
+    </script>
+    <!-- Invisible reCAPTCHA v3 -->
+<script src="assests/js/toggle.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfuwSAsAAAAAGUvsU-FGxY2m2NDoLPhvZmAKuDC"></script>
+    <script src="./assests/js/recaptcha.js"></script>
   </body>
 </html>
