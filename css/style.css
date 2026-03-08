@@ -131,7 +131,9 @@ nav ul li a:hover {
   transform: rotate(45deg) translate(-5px, -6px);
   background-color: var(--icon_color);
 }
-
+body.menu-open {
+  overflow: hidden;
+}
 /* ----------------------------------------- */
 
 /* banner style */
@@ -1025,7 +1027,10 @@ section.contact-section {
   .contact-section {
     padding: 50px 0;
   }
-
+.head nav { display: block; }
+  nav ul {
+    display: flex;
+  }
   .navbar {
     padding: 0 15px;
     flex-wrap: wrap;
@@ -1061,28 +1066,22 @@ section.contact-section {
   }
 
   .nav-menu {
-    display: none;
     position: fixed;
-    top: 70px;
-    left: 0;
-    width: 100%;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
     background-color: white;
     flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     z-index: 999;
-    transform: translateY(-100%);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    visibility: hidden;
-    max-height: calc(100vh - 70px);
+    transition: right 0.3s ease;
     overflow-y: auto;
+    padding-top: 80px;
   }
 
   .nav-menu.mobile-menu-open {
-    display: flex;
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+    right: 0;
   }
 
   .nav-menu li {
@@ -1100,39 +1099,16 @@ section.contact-section {
     font-weight: 500;
     display: block;
     transition: all 0.3s ease;
-    transform: translateX(-20px);
-    opacity: 0;
-    animation: slideInLeft 0.3s ease forwards;
   }
 
-  .nav-menu li:nth-child(1) a {
-    animation-delay: 0.1s;
-  }
-  .nav-menu li:nth-child(2) a {
-    animation-delay: 0.2s;
-  }
-  .nav-menu li:nth-child(3) a {
-    animation-delay: 0.3s;
-  }
-  .nav-menu li:nth-child(4) a {
-    animation-delay: 0.4s;
-  }
-  .nav-menu li:nth-child(5) a {
-    animation-delay: 0.5s;
-  }
+
 
   .nav-menu li a:hover {
     background-color: rgba(239, 88, 116, 0.1);
-    padding-left: 35px;
     transform: translateX(0);
   }
 
-  /* Reset animation when menu is closed */
-  .nav-menu:not(.mobile-menu-open) li a {
-    animation: none;
-    transform: translateX(-20px);
-    opacity: 0;
-  }
+
 
   /* Banner Mobile */
   .banner {
